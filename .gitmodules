@@ -1,0 +1,3 @@
+[submodule "Armor_Yolov5ver"]
+	path = Armor_Yolov5ver
+	url = https://github.com/Robo-pioneer/Armor_Yolov5ver.git
