@@ -1,0 +1,11 @@
+venv/
+/venv
+/authors.json
+_build/
+site/
+.vscode/
+.DS_Store
+.env
+.well-known/
+node_modules/
+*.pyc
