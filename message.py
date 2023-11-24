@@ -52,4 +52,9 @@ def init():
     tcp.release()
 
 # 启动服务器
-udp_server()
+
+
+
+if __name__ == '__main__':
+    init()
+    udp_server()
