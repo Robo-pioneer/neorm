@@ -2,6 +2,13 @@ import socket
 import threading
 import re
 import sys
+import argparse
+import os
+import platform
+import sys
+from pathlib import Path
+import torch.nn.functional as F
+from Armor_Yolov5ver.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
 host = "192.168.42.2"
 port = 40923
 address = (host, int(port))
@@ -10,7 +17,7 @@ tcp = threading.Lock()
 
 
 def usercode(data):
-    # 示例函数，用于处理解析后的数据
+    
     print("Processed data:", data)
 
 def process_data(data):
@@ -50,10 +57,6 @@ def init():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect(address)
     tcp.release()
-
-# 启动服务器
-
-
 
 if __name__ == '__main__':
     init()
