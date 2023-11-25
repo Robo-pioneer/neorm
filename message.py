@@ -7,8 +7,8 @@ import os
 import platform
 import sys
 from pathlib import Path
-import torch.nn.functional as F
-from Armor_Yolov5ver.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
+#import torch.nn.functional as F
+#from Armor_Yolov5ver.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
 host = "192.168.42.2"
 port = 40923
 address = (host, int(port))
@@ -53,11 +53,11 @@ def udp_server():
         client_thread.start()
         
 def init():
+    print("message server start")
     tcp.acquire()
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(address)
+    #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #s.connect(address)
     tcp.release()
-
-if __name__ == '__main__':
-    init()
+    print("message server inited")
     udp_server()
+
