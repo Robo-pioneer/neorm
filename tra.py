@@ -1,58 +1,51 @@
 # -*- encoding: utf-8 -*-
-# 测试环境：Python 3.6 版本
-
 import socket
 import sys
+import threading
 
-# 组网模式下，机器人当前 IP 地址为 192.168.0.115, 控制命令端口号为 40923
-# 机器人 IP 地址根据实际 IP 进行修改
-host = "192.168.42.2"
-port = 40923
-s = socket.socket() 
+# TCP连接的目标机器人控制命令端口信息
+tcp_host = "192.168.42.2"
+tcp_port = 40923
 
+# UDP服务器配置
+udp_host = "0.0.0.0"  
+udp_port = 50000       
 
-def main():
-
-        address = (host, int(port))
-
-        # 与机器人控制命令端口建立 TCP 连接
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        print("Connecting...")
-
-        s.connect(address)
-
-        print("Connected!")
+def udp_server(tcp_socket):
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_socket:
+        udp_socket.bind((udp_host, udp_port))
+        print(f"UDP Server listening on {udp_host}:{udp_port}")
 
         while True:
+            data, addr = udp_socket.recvfrom(1024)  # 接收数据
+            print(f"Received data from {addr}: {data.decode()}")
+            
+            # 将接收到的数据转发到TCP连接
+            try:
+                tcp_socket.send(data)
+            except socket.error as e:
+                print(f"Error sending to TCP socket: {e}")
+                break
 
-                # 等待用户输入控制指令
-                msg = input(">>> please input SDK cmd: ")
+def main():
+    # 创建TCP套接字并连接到机器人控制端口
+    try:
+        tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        tcp_socket.connect((tcp_host, tcp_port))
+        print(f"Connected to TCP {tcp_host}:{tcp_port}")
+    except socket.error as e:
+        print(f"Error connecting to TCP socket: {e}")
+        sys.exit(1)
 
-                # 当用户输入 Q 或 q 时，退出当前程序
-                if msg.upper() == 'Q':
-                        break
+    # 启动UDP服务器
+    udp_thread = threading.Thread(target=udp_server, args=(tcp_socket,))
+    udp_thread.start()
 
-                # 添加结束符
-                msg += ';'
+    udp_thread.join()  # 等待UDP服务器线程结束
 
-                # 发送控制命令给机器人
-                s.send(msg.encode('utf-8'))
-
-                try:
-                        # 等待机器人返回执行结果
-                        buf = s.recv(1024)
-
-                        print(buf.decode('utf-8'))
-                except socket.error as e:
-                        print("Error receiving :", e)
-                        sys.exit(1)
-                if not len(buf):
-                        break
-
-        # 关闭端口连接
-        s.shutdown(socket.SHUT_WR)
-        s.close()
+    # 关闭TCP连接
+    tcp_socket.shutdown(socket.SHUT_WR)
+    tcp_socket.close()
 
 if __name__ == '__main__':
-        main()
+    main()

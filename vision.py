@@ -13,7 +13,7 @@ import traceback
 import art 
 from art import *
 import torch.nn.functional as F
-from Armor_Yolov5ver.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
+
 #计算帧率的变量
 fps_time_past = 0
 fps_time_now = 0
@@ -24,14 +24,14 @@ armor_area_list = []#装甲板面积列表
 k = np.ones((6,6),np.uint8)#创建6*6的数组作为核
 erode = np.ones((1,1),np.uint8)#创建1*1的数组作为核
 
-serial_port = 115200#设置串口波特率(9600或者115200)
-com = serial.Serial("/dev/ttyUSB0",serial_port)#设置串口设备
 
-device = torch.device("cuda")# [只有N卡才可以使用cuda加速]
-#device = torch.device("cpu")#cpu推理模式
+#device = torch.device("cuda")# [只有N卡才可以使用cuda加速]
+device = torch.device("cpu")#cpu推理模式
 
-torch_model = torch.hub.load('./', 'custom',
-                             './models/armor/weights/best.pt',source='local', force_reload=True)  #加载本地yolov5模型(需要修改路径和文件)
+
+
+torch_model = torch.hub.load('./Armor_Yolov5ver', 'custom',
+                             './Armor_Yolov5ver/best.pt',source='local', force_reload=True)  #加载本地yolov5模型(需要修改路径和文件)
 def send_message(bool,x_position,y_position):
     if bool == True:#如果bool为真才会发送信息
         print("send",x_position,y_position)
@@ -187,7 +187,7 @@ def camera_set(bool):#摄像头基础参数设置函数
         print("bool error-----")
 
 if __name__ == "__main__":#main
-    cap = 0
+    cap = 1
     cap = cv2.VideoCapture(cap)
     camera_set(True)#摄像头设置
     armor_color = "blue"#设置识别装甲板的颜色

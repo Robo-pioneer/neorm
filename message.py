@@ -55,8 +55,8 @@ def udp_server():
 def init():
     print("message server start")
     tcp.acquire()
-    #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #s.connect(address)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(address)
     tcp.release()
     print("message server inited")
     udp_server()
