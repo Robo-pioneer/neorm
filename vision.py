@@ -25,8 +25,8 @@ k = np.ones((6,6),np.uint8)#创建6*6的数组作为核
 erode = np.ones((1,1),np.uint8)#创建1*1的数组作为核
 
 
-#device = torch.device("cpu")# [只有N卡才可以使用cuda加速]
-device = torch.device("mps")#cpu推理模式曙
+device = torch.device("cpu")# [只有N卡才可以使用cuda加速]
+#device = torch.device("mps")#cpu推理模式曙
 
 
 

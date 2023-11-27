@@ -9,7 +9,7 @@ tcp_port = 40923
 
 # UDP服务器配置
 udp_host = "0.0.0.0"  # 监听所有可用接口
-udp_port = 50000       # UDP服务器端口
+udp_port = 5000       # UDP服务器端口
 
 def udp_server(tcp_socket):
     """
@@ -23,7 +23,6 @@ def udp_server(tcp_socket):
         while True:
             data, addr = udp_socket.recvfrom(1024)  # 接收数据
             print(f"Received from UDP ({addr}): {data.decode()}")
-
             # 将接收到的数据转发到TCP连接
             try:
                 tcp_socket.send(data)

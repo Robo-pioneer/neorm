@@ -6,7 +6,7 @@ def send_udp_message(message, server_ip, server_port):
 
     try:
         # 发送消息到指定的IP地址和端口
-        udp_socket.sendto(message.encode(), (server_ip, server_port))
+        udp_socket.sendto(message.encode('utf-8'), (server_ip, server_port))
         print(f"消息已发送到 {server_ip}:{server_port}")
     finally:
         # 关闭套接字
