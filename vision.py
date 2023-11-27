@@ -13,6 +13,7 @@ import traceback
 import art 
 from art import *
 import torch.nn.functional as F
+import socket
 
 #计算帧率的变量
 fps_time_past = 0
@@ -32,11 +33,25 @@ device = torch.device("cpu")# [只有N卡才可以使用cuda加速]
 
 torch_model = torch.hub.load('./Armor_Yolov5ver', 'custom',
                              './Armor_Yolov5ver/best.pt',source='local', force_reload=True)  #加载本地yolov5模型(需要修改路径和文件)
+
+def send_udp_message(message):
+    server_ip = "127.0.0.1"
+    server_port = 5000
+    # 创建UDP套接字
+    udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    try:
+        # 发送消息到指定的IP地址和端口
+        udp_socket.sendto(message.encode('utf-8'), (server_ip, server_port))
+    finally:
+        # 关闭套接字
+        udp_socket.close()
+
 def send_message(bool,x_position,y_position):
     if bool == True:#如果bool为真才会发送信息
         print("send",x_position,y_position)
         send_string = "x "+str(x_position - 400)+' y '+str(y_position - 300)+"\n"#将坐标信息整合到send_string中
-        com.write(send_string.encode('utf-8'))#将send_string发送给EP(EP和开发板的串口波特率需要保持一致)
+        ## 输出部分
     else:
         pass
 
