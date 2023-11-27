@@ -26,7 +26,7 @@ erode = np.ones((1,1),np.uint8)#创建1*1的数组作为核
 
 
 #device = torch.device("cuda")# [只有N卡才可以使用cuda加速]
-device = torch.device("cpu")#cpu推理模式
+device = torch.device("mps")#cpu推理模式曙
 
 
 
