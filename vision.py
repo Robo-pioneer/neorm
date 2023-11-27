@@ -7,7 +7,7 @@ Date:2022.9.17
 
 import cv2
 import torch
-import time,math,serial
+import time,math
 import numpy as np
 import traceback
 import art 
@@ -25,7 +25,7 @@ k = np.ones((6,6),np.uint8)#创建6*6的数组作为核
 erode = np.ones((1,1),np.uint8)#创建1*1的数组作为核
 
 
-#device = torch.device("cuda")# [只有N卡才可以使用cuda加速]
+#device = torch.device("cpu")# [只有N卡才可以使用cuda加速]
 device = torch.device("mps")#cpu推理模式曙
 
 
@@ -187,10 +187,10 @@ def camera_set(bool):#摄像头基础参数设置函数
         print("bool error-----")
 
 if __name__ == "__main__":#main
-    cap = 1
+    cap = 0
     cap = cv2.VideoCapture(cap)
     camera_set(True)#摄像头设置
-    armor_color = "blue"#设置识别装甲板的颜色
+    armor_color = "red"#设置识别装甲板的颜色
     
     print(text2art("Detect: "+armor_color))
     if armor_color == "blue":
