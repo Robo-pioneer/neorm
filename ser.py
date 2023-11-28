@@ -18,6 +18,7 @@ def process_data(data):
 
 def handle_client(client_data):
     # 处理客户端数据
+    print(client_data)
     processed_data = process_data(client_data)
     if processed_data is not None:
         usercode(processed_data)
