@@ -14,6 +14,7 @@ import art
 from art import *
 import torch.nn.functional as F
 import socket
+from simple_pid import PID
 
 #计算帧率的变量
 fps_time_past = 0
@@ -28,8 +29,8 @@ erode = np.ones((1,1),np.uint8)#创建1*1的数组作为核
 
 device = torch.device("cpu")# [只有N卡才可以使用cuda加速]
 #device = torch.device("mps")#cpu推理模式曙
-
-
+xpid = PID(1, 0.1, 0.05, setpoint=1,output_limits=(-20, 20))
+ypid = PID(1, 0.1, 0.05, setpoint=1,output_limits=(-20, 20))
 
 torch_model = torch.hub.load('./Armor_Yolov5ver', 'custom',
                              './Armor_Yolov5ver/best.pt',source='local', force_reload=True)  #加载本地yolov5模型(需要修改路径和文件)
@@ -49,9 +50,13 @@ def send_udp_message(message):
 
 def send_message(bool,x_position,y_position):
     if bool == True:#如果bool为真才会发送信息
-        print("send",x_position,y_position)
-        send_string = "x "+str(x_position - 400)+' y '+str(y_position - 300)+"\n"#将坐标信息整合到send_string中
-        ## 输出部分
+                xspeed=xpid(x_position - 400)
+                yspeed=xpid(y_position - 300)
+                print("send",x_position,y_position)
+                print("send",xspeed,yspeed)
+                send_string = "gimbal speed p "+str(yspeed)+' y '+str(xspeed)+"\n"#将坐标信息整合到send_string中
+                send_udp_message(send_string)
+                ## 输出部分
     else:
         pass
 
