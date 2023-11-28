@@ -4,7 +4,7 @@ import sys
 import threading
 
 # TCP连接的目标机器人控制命令端口信息
-tcp_host = "192.168.42.2"
+tcp_host = "192.168.1.128"
 tcp_port = 40923
 
 # UDP服务器配置
@@ -37,7 +37,7 @@ def tcp_receive(tcp_socket):
     while True:
         try:
             buf = tcp_socket.recv(1024)
-            if not buf:
+            if not buf: 
                 break
             print(f"Received from TCP: {buf.decode('utf-8')}")
         except socket.error as e:
