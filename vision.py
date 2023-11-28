@@ -27,38 +27,18 @@ k = np.ones((6,6),np.uint8)#创建6*6的数组作为核
 erode = np.ones((1,1),np.uint8)#创建1*1的数组作为核
 
 
-device = torch.device("mps")# [只有N卡才可以使用cuda加速]
-#device = torch.device("cpu")#cpu推理模式曙
-xpid = PID(0.1, 0, 0, setpoint=0,output_limits=(-20, 20))
-ypid = PID(0.1, 0, 0, setpoint=0,output_limits=(-20, 20))
+device = torch.device("cpu")# [只有N卡才可以使用cuda加速]
+#device = torch.device("mps")#cpu推理模式曙
+
+
 
 torch_model = torch.hub.load('./Armor_Yolov5ver', 'custom',
                              './Armor_Yolov5ver/best.pt',source='local', force_reload=True)  #加载本地yolov5模型(需要修改路径和文件)
-
-def send_udp_message(message):
-    server_ip = "127.0.0.1"
-    server_port = 5000
-    # 创建UDP套接字
-    message+=';'
-    udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-    try:
-        # 发送消息到指定的IP地址和端口
-        udp_socket.sendto(message.encode('utf-8'), (server_ip, server_port))
-    finally:
-        # 关闭套接字
-        udp_socket.close()
-
 def send_message(bool,x_position,y_position):
     if bool == True:#如果bool为真才会发送信息
-                xspeed=xpid(x_position - 400)
-                yspeed=xpid(y_position - 300)
-                print("send",x_position,y_position)
-                print("send",xspeed,yspeed)
-                send_string = "gimbal speed p "+str(yspeed)+' y '+str(xspeed)+";\n"#将坐标信息整合到send_string中
-                #send_string = "gimbal speed p "+str(-(x_position - 400)*0.25)+' y '+str(-(x_position - 400)*0.25)+";\n"#将坐标信息整合到send_string中
-                send_udp_message(send_string)
-                ## 输出部分
+        print("send",x_position,y_position)
+        send_string = "x "+str(x_position - 400)+' y '+str(y_position - 300)+"\n"#将坐标信息整合到send_string中
+        com.write(send_string.encode('utf-8'))#将send_string发送给EP(EP和开发板的串口波特率需要保持一致)
     else:
         pass
 

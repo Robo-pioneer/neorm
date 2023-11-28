@@ -1,6 +1,8 @@
 import socket
 
-def send_udp_message(message, server_ip, server_port):
+def send_udp_message(message):
+    server_ip = "127.0.0.1"
+    server_port = 5000
     # 创建UDP套接字
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     message+=';'
@@ -13,8 +15,7 @@ def send_udp_message(message, server_ip, server_port):
 
 if __name__ == "__main__":
     # 服务器IP和端口
-    server_ip = "127.0.0.1"
-    server_port = 5000
+
 
     while True:
         # 获取用户输入
@@ -23,6 +24,5 @@ if __name__ == "__main__":
         # 检查用户是否想要退出
         if user_input.lower() == 'exit':
             break
-
-        # 发送用户输入到服务器
-        send_udp_message(user_input, server_ip, server_port)
+        send_udp_message(user_input)
+            
