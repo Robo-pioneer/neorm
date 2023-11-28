@@ -27,10 +27,10 @@ k = np.ones((6,6),np.uint8)#创建6*6的数组作为核
 erode = np.ones((1,1),np.uint8)#创建1*1的数组作为核
 
 
-device = torch.device("mps")# [只有N卡才可以使用cuda加速]
-#device = torch.device("cpu")#cpu推理模式曙
-xpid = PID(0.1, 0, 0, setpoint=0,output_limits=(-20, 20))
-ypid = PID(0.1, 0, 0, setpoint=0,output_limits=(-20, 20))
+#device = torch.device("mps")# [只有N卡才可以使用cuda加速]
+device = torch.device("cpu")#cpu推理模式曙
+xpid = PID(0.06, 0.01, 0.01, setpoint=0,output_limits=(-20, 20))
+ypid = PID(0.06, 0.01, 0.01, setpoint=0,output_limits=(-20, 20))
 
 torch_model = torch.hub.load('./Armor_Yolov5ver', 'custom',
                              './Armor_Yolov5ver/best.pt',source='local', force_reload=True)  #加载本地yolov5模型(需要修改路径和文件)
@@ -50,13 +50,18 @@ def send_udp_message(message):
         udp_socket.close()
 
 def send_message(bool,x_position,y_position):
-    if bool == True:#如果bool为真才会发送信息
+    print("send   aaaaa",x_position - 400,y_position-300)
+    if bool ==  True:#如果bool为真才会发送信息
                 xspeed=xpid(x_position - 400)
-                yspeed=xpid(y_position - 300)
-                print("send",x_position,y_position)
-                print("send",xspeed,yspeed)
-                send_string = "gimbal speed p "+str(yspeed)+' y '+str(xspeed)+";\n"#将坐标信息整合到send_string中
-                #send_string = "gimbal speed p "+str(-(x_position - 400)*0.25)+' y '+str(-(x_position - 400)*0.25)+";\n"#将坐标信息整合到send_string中
+                yspeed=ypid(y_position - 300)
+                if((y_position - 400)*(y_position - 400)+(x_position - 300)* (x_position - 300)< 400):
+                    send_string = "blaster fire"
+                    print((y_position - 400)+(x_position - 300))
+                else:
+                    print("send",xspeed,yspeed)
+                    send_string = "gimbal speed p "+str(-1*yspeed)+' y '+str(-1*xspeed)+";\n"#将坐标信息整合到send_string中
+                    #send_string = "gimbal move p "+str((y_position - 400)*0.06)+' y '+str((x_position - 300)*0.06)+";\n"#将坐标信息整合到send_string中
+                
                 send_udp_message(send_string)
                 ## 输出部分
     else:
